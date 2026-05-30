@@ -163,6 +163,13 @@ main {
 }
 .visits-button:active { transform: translateY(0); }
 
+/* On narrow screens the title would run under the fixed "My Trips" button.
+   Push the header down and drop the decorative crowns so the title still fits. */
+@media (max-width: 720px) {
+  header { padding-top: 80px; }
+  h1 .crown { display: none; }
+}
+
 /* Modal */
 .modal {
   position: fixed;
