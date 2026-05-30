@@ -1,0 +1,14 @@
+{
+  "_comment": "Each entry: 'name' must match a Natural Earth country name (aliases handled in app.js). 'visits' is an array of YYYY-MM strings, one per separate trip. 'notes' is shown in the crown popup and in the visits modal.",
+  "visited": [
+    { "name": "Belgium",        "notes": "Home sweet home!",                 "visits": [] },
+    { "name": "Netherlands",    "notes": "Camping and beaches!",            "visits": ["2025-05", "2025-06", "2024-06", "2023-04"] },
+    { "name": "Spain",          "notes": "Yummy churros and sunny beaches!", "visits": ["2025-08", "2022-11"] },
+    { "name": "Germany",        "notes": "Big castles and pretzels!",        "visits": ["2025-04"] },
+    { "name": "Poland",         "notes": "My other home!",                "visits": ["2026-03", "2025-11", "2025-07", "2025-04", "2025-01","2024-09","2024-06","2024-03","2023-12","2023-09", "2023-07", "2023-04", "2023-01", "2022-09", "2022-07", "2022-04", "2021-12"] },
+    { "name": "Czech Republic", "notes": "Just a teeny peek over the border!", "visits": ["2022-07"] },
+    { "name": "Portugal",       "notes": "Yummy custard tarts!",             "visits": ["2022-02", "2026-04"] },
+    { "name": "Denmark",        "notes": "Hunting trolls!",                       "visits": ["2025-08"] },
+    { "name": "Italy",          "notes": "Pizza, pasta and gelato!",       "visits": ["2025-10"] }
+  ]
+}

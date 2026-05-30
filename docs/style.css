@@ -1,0 +1,457 @@
+/* My Europe Trip Map - Princess & Rainbow theme */
+
+:root {
+  --pink:    #ff5fa2;
+  --orange:  #ff9a3c;
+  --yellow:  #ffd23f;
+  --green:   #5fd068;
+  --blue:    #5ec8ff;
+  --indigo:  #7a6cff;
+  --violet:  #c46cff;
+  --rose:    #ff7eb9;
+
+  --sea:     #cdeaff;
+  --land:    #fff7e6;
+  --land-stroke: #b88aa8;
+  --ink:     #4a2a55;
+  --paper:   #fff8fb;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Comic Sans MS", "Chalkboard SE", "Marker Felt", system-ui, sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Rainbow sky background, drawn with a layered gradient */
+body {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.85) 0 70px, transparent 71px),
+    radial-gradient(circle at 80% 15%, rgba(255,255,255,0.75) 0 55px, transparent 56px),
+    radial-gradient(circle at 50% 8%,  rgba(255,255,255,0.80) 0 45px, transparent 46px),
+    linear-gradient(
+      to bottom,
+      #ff7eb9 0%,
+      #ffb46b 14%,
+      #ffe066 28%,
+      #8be38f 42%,
+      #7fd2ff 60%,
+      #b39bff 78%,
+      #e4b8ff 100%
+    );
+  background-attachment: fixed;
+}
+
+/* Page header */
+header {
+  text-align: center;
+  padding: 28px 16px 8px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  color: #fff;
+  text-shadow:
+    -2px -2px 0 #d33a86,
+     2px -2px 0 #d33a86,
+    -2px  2px 0 #d33a86,
+     2px  2px 0 #d33a86,
+     4px  6px 0 rgba(0,0,0,0.18);
+  letter-spacing: 1px;
+}
+
+h1 .crown {
+  display: inline-block;
+  transform: translateY(-6px) rotate(-8deg);
+  margin-right: 8px;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  color: #fff;
+  text-shadow: 1px 2px 0 rgba(0,0,0,0.18);
+}
+
+/* Castle decoration in the bottom-left corner */
+.castle {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: clamp(440px, 52vw, 720px);
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transform: scaleX(-1);
+}
+
+/* Map card */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.map-card {
+  background: var(--paper);
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: 0 12px 40px rgba(122, 60, 130, 0.25);
+  border: 4px dashed #ffb6e6;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--sea);
+  border-radius: 22px;
+}
+
+/* Country styling */
+.country {
+  fill: var(--land);
+  stroke: var(--land-stroke);
+  stroke-width: 0.6;
+  transition: filter 0.2s ease, transform 0.2s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.country.visited {
+  stroke: #ffffff;
+  stroke-width: 1;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 0 rgba(0,0,0,0.15));
+}
+
+.country.visited:hover {
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)) brightness(1.08);
+}
+
+/* Top-right "My Trips" button */
+.visits-button {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  color: var(--ink);
+  border: 3px solid #ff7eb9;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(122, 60, 130, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.visits-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(122, 60, 130, 0.35);
+}
+.visits-button:active { transform: translateY(0); }
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal[hidden] { display: none; }
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(74, 42, 85, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.modal-card {
+  position: relative;
+  background: var(--paper);
+  border: 4px dashed #ffb6e6;
+  border-radius: 24px;
+  padding: 22px 22px 18px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  /* No overflow here; the inner list scrolls instead, so the scrollbar
+     stays inset from the rounded corners. */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: modal-pop 0.25s ease-out;
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.modal-card h2 {
+  margin: 0 0 14px;
+  text-align: center;
+  color: var(--ink);
+  font-size: 1.6rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 50%;
+}
+.modal-close:hover { background: #ffd2ec; }
+
+/* Sort controls inside the modal */
+.sort-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  background: #fff;
+  border: 2px dashed #ffd2ec;
+  border-radius: 16px;
+}
+.sort-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sort-label {
+  font-weight: bold;
+  color: var(--ink);
+  font-size: 0.95rem;
+  min-width: 60px;
+}
+.pill-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid #ffb6e6;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.pill:hover { background: #ffe8f4; }
+.pill[aria-pressed="true"] {
+  background: #ff5fa2;
+  border-color: #ff5fa2;
+  color: #fff;
+  box-shadow: 0 3px 0 #d33a86;
+}
+.pill:active { transform: translateY(1px); }
+
+.visits-list {
+  list-style: none;
+  padding: 0 8px 0 0;     /* right gap keeps text off the scrollbar */
+  margin: 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;          /* required so flex children actually scroll */
+  /* Soften the native scrollbar so it blends with the princess theme. */
+  scrollbar-width: thin;
+  scrollbar-color: #ff7eb9 transparent;
+}
+.visits-list::-webkit-scrollbar { width: 8px; }
+.visits-list::-webkit-scrollbar-track { background: transparent; }
+.visits-list::-webkit-scrollbar-thumb {
+  background: #ff7eb9;
+  border-radius: 999px;
+}
+.visits-list::-webkit-scrollbar-thumb:hover { background: #ff5fa2; }
+/* Flat row layout (date-sort mode) */
+.visits-list > li.flat-row {
+  display: grid;
+  grid-template-columns: auto 14px 1fr;
+  gap: 6px 12px;
+  align-items: baseline;
+  padding: 12px 6px;
+  border-top: 2px dotted #ffd2ec;
+}
+.visits-list > li.flat-row:first-child { border-top: none; }
+
+/* Country-grouped layout (country-sort mode) */
+.visits-list > li.country-group {
+  padding: 12px 6px;
+  border-top: 2px dotted #ffd2ec;
+}
+.visits-list > li.country-group:first-child { border-top: none; }
+.country-group .cg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+.country-group .cg-notes {
+  margin: 2px 0 6px 22px;
+  font-size: 0.9rem;
+  color: #6a4a72;
+}
+.country-group .cg-visits {
+  list-style: disc;
+  margin: 0 0 0 38px;
+  padding: 0;
+  color: #8a4fa0;
+  font-weight: bold;
+  font-size: 0.92rem;
+}
+.country-group .cg-visits li {
+  padding: 1px 0;
+}
+
+.visits-list .date {
+  font-weight: bold;
+  color: #8a4fa0;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  min-width: 110px;
+}
+.visits-list .dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  align-self: center;
+}
+.visits-list .country {
+  font-weight: bold;
+  color: var(--ink);
+}
+.visits-list .notes {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: #6a4a72;
+  font-weight: normal;
+  margin-top: 2px;
+}
+
+/* Country count line under the map */
+.count {
+  margin-top: 16px;
+  text-align: center;
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  font-weight: bold;
+  color: var(--ink);
+}
+
+/* Crown popup that floats over a clicked country */
+.crown-pop {
+  position: absolute;
+  pointer-events: none;
+  font-size: 56px;
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 0;
+  animation: crown-pop-anim 1.6s ease-out forwards;
+  text-shadow: 0 4px 6px rgba(0,0,0,0.25);
+  z-index: 10;
+}
+
+.crown-pop .label {
+  display: block;
+  font-size: 18px;
+  background: #fff;
+  color: var(--ink);
+  border: 3px solid #ffb6e6;
+  border-radius: 14px;
+  padding: 4px 12px;
+  margin-top: 4px;
+  text-shadow: none;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.crown-pop .note {
+  display: block;
+  font-size: 13px;
+  color: #6a4a72;
+  margin-top: 2px;
+  font-weight: normal;
+}
+
+@keyframes crown-pop-anim {
+  0%   { opacity: 0; transform: translate(-50%, -20%) scale(0.2) rotate(-30deg); }
+  20%  { opacity: 1; transform: translate(-50%, -90%) scale(1.2) rotate(8deg); }
+  40%  {              transform: translate(-50%, -85%) scale(1.0) rotate(-4deg); }
+  60%  {              transform: translate(-50%, -85%) scale(1.05) rotate(2deg); }
+  85%  { opacity: 1; transform: translate(-50%, -85%) scale(1.0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-50%, -110%) scale(0.9) rotate(0deg); }
+}
+
+/* Sparkle bits floating across the page */
+.sparkle {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+  font-size: 22px;
+  opacity: 0.85;
+  animation: sparkle-float 6s linear infinite;
+}
+@keyframes sparkle-float {
+  0%   { transform: translateY(0)     rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+}
+
+/* Loading state */
+#loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+#error {
+  text-align: center;
+  padding: 20px;
+  color: #b00040;
+  background: #fff0f5;
+  border-radius: 12px;
+  display: none;
+}
+
+footer {
+  text-align: center;
+  padding: 18px 0 32px;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Europe Trip Map</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%91%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- Castle decoration in the bottom left -->
+  <img class="castle left" src="./castle.png" alt="" aria-hidden="true" />
+
+  <!-- Floating button (top-right) to open the visits list -->
+  <button id="open-visits" class="visits-button" type="button" aria-label="Show list of visits">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <circle cx="4" cy="6"  r="1.6" fill="currentColor"/>
+      <circle cx="4" cy="12" r="1.6" fill="currentColor"/>
+      <circle cx="4" cy="18" r="1.6" fill="currentColor"/>
+      <rect x="9"  y="5"  width="12" height="2.4" rx="1.2" fill="currentColor"/>
+      <rect x="9"  y="10.8" width="12" height="2.4" rx="1.2" fill="currentColor"/>
+      <rect x="9"  y="16.6" width="12" height="2.4" rx="1.2" fill="currentColor"/>
+    </svg>
+    <span>My Trips</span>
+  </button>
+
+  <!-- Visits modal (hidden until the button is clicked) -->
+  <div id="visits-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="visits-title">
+      <button class="modal-close" type="button" data-close aria-label="Close">×</button>
+      <h2 id="visits-title">👑 My Trips 👑</h2>
+
+      <div class="sort-controls" id="sort-controls">
+        <div class="sort-row">
+          <span class="sort-label">Sort by:</span>
+          <div class="pill-group" role="group" aria-label="Sort field">
+            <button type="button" class="pill" data-field="date"    aria-pressed="false">📅 Date</button>
+            <button type="button" class="pill" data-field="country" aria-pressed="true">🔤 Country</button>
+          </div>
+        </div>
+        <div class="sort-row">
+          <span class="sort-label">Order:</span>
+          <div class="pill-group" role="group" aria-label="Sort direction">
+            <button type="button" class="pill" data-dir="asc"  aria-pressed="true">↓ <span class="dir-label-asc">A → Z</span></button>
+            <button type="button" class="pill" data-dir="desc" aria-pressed="false">↑ <span class="dir-label-desc">Z → A</span></button>
+          </div>
+        </div>
+      </div>
+
+      <ol id="visits-list" class="visits-list"></ol>
+    </div>
+  </div>
+
+  <header>
+    <h1><span class="crown">👑</span>My Europe Trip Map<span class="crown" style="transform:translateY(-6px) rotate(8deg);">👑</span></h1>
+    <p class="subtitle">Tap a sparkly country to see a crown!</p>
+  </header>
+
+  <main>
+    <div class="map-card">
+      <div id="loading">✨ Getting the map ready... ✨</div>
+      <div id="error"></div>
+      <svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="count" id="count"></div>
+    </div>
+  </main>
+
+  <!-- d3 and topojson-client (small, hosted on jsdelivr CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
